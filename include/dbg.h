@@ -28,13 +28,13 @@
 #include <stdarg.h>
 #include <signal.h>
 
-/* Taille maximal pour nombre de symbols*/
+/* Taille maximale pour nombre de symbols*/
 #define NB_MAX_SYMBOLS 16364
 
 /* Nombre maximal de sections */
 #define NB_MAX_SECTIONS 256
 
-/* Nombre maximal de bibliothèques chargés */
+/* Nombre maximal de bibliothèques chargées */
 #define NB_MAX_LIB 256
 
 /**
@@ -61,13 +61,34 @@ struct elf_section
     unsigned long sh_size;
 };
 
-/* structure caractérisant un symbol quelconque */
+/* structure caractérisant un symbole quelconque */
 struct symbol
 {
     char *name;
     int type;
     int bind;
     unsigned long value;
+};
+
+/*  Structure principale permettant l'exoration du ELF (elf32 ou elf64) */
+struct handle
+{
+    char *path;
+    char **args;
+    uint8_t *map;
+    struct elf32 *elf32;                          /* Tableau de structures elf32 */
+    struct elf64 *elf64;                          /* Tableau de structures elf64 */
+    struct elf_section sh_range[NB_MAX_SECTIONS]; /* Tableau contenant toutes les sections */
+    struct symbol locsyms[NB_MAX_SYMBOLS];        /* Tableau pour stocker les symboles locaux */
+    struct symbol dynsyms[NB_MAX_SYMBOLS];        /* Tableau pour stocker les symboles dynamiques */
+    char *libnames[256];                          /* Tableau pour stocker le nom des libairies chargées */
+    int loccount;                                 /* compteur du nombre de symbole local */
+    int dyncount;                                 /* compteur du nombre de symbole dynamique */
+    int libcount;                                 /* compteur du nombre de libairie dynamique */
+    int shdr_count;
+    struct user_regs_struct p_struct; /* compteur du nombre de section */
+    int pid;
+    char *local;
 };
 
 
@@ -89,7 +110,7 @@ static void handler(int signum, siginfo_t *si, void *context);
  */
 int getSymbol(struct handle *h);
 
-/* structure de gestions des options du débuggage */
+/* structure de gestion des options du débuggage */
 struct
 {
     int elfinfo;
@@ -124,26 +145,7 @@ struct elf32
     char *symStringtable; //
 };
 
-/*  Structure principale permettant l'exoration du ELF (elf32 ou elf64) */
-struct handle
-{
-    char *path;
-    char **args;
-    uint8_t *map;
-    struct elf32 *elf32;                          /* Tableau de structures elf32 */
-    struct elf64 *elf64;                          /* Tableau de structures elf64 */
-    struct elf_section sh_range[NB_MAX_SECTIONS]; /* Tableau contenant toute les sections */
-    struct symbol locsyms[NB_MAX_SYMBOLS];        /* Tableau pour stocker les symboles locaux */
-    struct symbol dynsyms[NB_MAX_SYMBOLS];        /* Tableau pour stocker les symboles dynamiques */
-    char *libnames[256];                          /* Tableau pour stocker le nom des libairies charger */
-    int loccount;                                 /* compteur du nombre de symbole local */
-    int dyncount;                                 /* compteur du nombre de symbole dynamique */
-    int libcount;                                 /* compteur du nombre de libairie dynamique */
-    int shdr_count;
-    struct user_regs_struct p_struct; /* compteur du nombre de section */
-    int pid;
-    char *local;
-};
+
 
 /* */
 struct address_space

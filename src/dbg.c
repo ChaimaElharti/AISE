@@ -72,6 +72,7 @@ char *strduplication(const char *original)
     }
     return p;
 }
+
 /**
  * @brief Gestionnaire des signaux
  *
@@ -710,7 +711,7 @@ void processes_analyze(struct handle *h)
         printf(B_BLUE "=================================================================\n" reset);
         printf(B_WHITE "                   Liste des symboles : \n" reset);
         printf(B_BLUE "=================================================================\n" reset);
-        printf(B_PURPLE "Adresse mémoires                             Nom des symboles  \n" reset);
+        printf(B_PURPLE "Adresses mémoire                             Nom des symboles  \n" reset);
         printf(B_BLUE "=================================================================\n" reset);
         for (i = 0; i < h->loccount; i++)
         {
@@ -928,7 +929,7 @@ int main(int argc, char *argv[], char *envp[])
             }
             else if (WIFSTOPPED(status))
             {
-                printf(B_RED "child stopped by signal %d (%s)\n" reset, WSTOPSIG(status), strsignal(WSTOPSIG(status)));
+                printf(B_RED "Child stopped by signal %d (%s)\n" reset, WSTOPSIG(status), strsignal(WSTOPSIG(status)));
 
                 switch (WSTOPSIG(status))
                 {
@@ -948,9 +949,9 @@ int main(int argc, char *argv[], char *envp[])
 analyze_begin:
     handle.pid = pid;
     PID = pid;
-    printf(B_BLUE "===================================================================\n" reset);
+    printf(B_BLUE "=================================================================\n" reset);
     printf(B_RED "                 Début de debuggage \n" reset);
-    printf(B_BLUE "==================================================================\n" reset);
+    printf(B_BLUE "=================================================================\n" reset);
     processes_analyze(&handle);
     goto fin;
 

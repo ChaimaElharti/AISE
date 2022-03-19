@@ -4,15 +4,17 @@ TARGET_EXEC :=
 
 
 run: 
-		$(CC) fromscratch_ptrace.c -o dbg $(LDFLAGS)
+		$(CC) src/dbg.c -o dbg $(LDFLAGS)
 
 debug:
 		./dbg -e $(TARGET_EXEC)
 
 segf:
-	$(CC) segfault1.c -g -rdynamic -o  Sgf1
-	$(CC) segfault2.c -g -rdynamic -o  Sgf2
-	$(CC) segfault3.c -g -rdynamic -o  Sgf3
+	$(CC) test/segfault1.c -g -rdynamic -o  Sgf1
+	$(CC) test/segfault2.c -g -rdynamic -o  Sgf2
+	$(CC) test/segfault3.c -g -rdynamic -o  Sgf3
+	$(CC) test/infiniteLoop.c -g -rdynamic -o  loop 
+	$(CC) test/test.c -g -rdynamic -o  test
 
 debugSgf:
 	./dbg -e Sgf1
