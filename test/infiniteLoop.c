@@ -1,3 +1,5 @@
+/*Programme de boucle infinie*/
+
 #include <stdio.h>
 #include <unistd.h>
 

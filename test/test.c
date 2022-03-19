@@ -1,3 +1,5 @@
+/*Programme générant un Stack smashing*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
