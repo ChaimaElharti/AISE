@@ -5,7 +5,7 @@ TARGET_EXEC :=
 all: run segf debugSgf 
 
 run: 
-		$(CC) src/dbg.c -o dbg $(LDFLAGS)
+		$(CC) src/dbg.c -o dbg 
 
 debug:
 		./dbg -e $(TARGET_EXEC)
@@ -21,7 +21,6 @@ debugSgf:
 	./dbg -e Sgf1
 	./dbg -e Sgf2
 	./dbg -e Sgf3
-	./dbg -e loop
 	./dbg -e stacksmashing
 
 sig:

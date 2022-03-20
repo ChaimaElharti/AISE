@@ -57,10 +57,10 @@ void get_memory_maps(int pid)
 }
 
 /**
- * @brief duplication d'une chaine de caratère donnée
+ * @brief Duplication d'une chaine de caratère donnée
  *
- * @param original pointeur sur la chaine de caratère à dupliquer
- * @return char*  ponteur sur la chaine de caractère dupliquée.
+ * @param original Pointeur sur la chaine de caratère à dupliquer
+ * @return char*  Pointeur sur la chaine de caractère dupliquée.
  */
 char *strduplication(const char *original)
 {
@@ -76,11 +76,11 @@ char *strduplication(const char *original)
 /**
  * @brief Gestionnaire des signaux
  *
- * @param signum numéro signal
- * @param si structure siginfo_t
+ * @param signum Numéro signal
+ * @param si Structure siginfo_t
  * @param context
  */
-static void handler(int signum, siginfo_t *si, void *context)
+ void handler(int signum, siginfo_t *si, void *context)
 {
     switch (signum)
     {
@@ -89,14 +89,14 @@ static void handler(int signum, siginfo_t *si, void *context)
 
         break;
     case SIGFPE:
-        printf(B_WHITE "Opération arithmétique erronée, telle que division du zéro ou opération entraînant un dépassement de capacité .Ou manipulation de valeur numérique sans virgule flottante.\n" reset);
+        printf(B_WHITE "Opération arithmétique erronée, telle que division du zéro ou opération entraînant un dépassement de capacité. Ou manipulation de valeur numérique sans virgule flottante.\n" reset);
         switch (si->si_code)
         {
         case FPE_FLTDIV:
             printf("Floating-point divided-by-zero at %p\n", si->si_addr);
             break;
         case FPE_FLTINV:
-            printf("Invalide floating-point operation  at %p\n", si->si_addr);
+            printf("Invalide floating-point operation at %p\n", si->si_addr);
             break;
         case FPE_FLTOVF:
             printf("Floating-point overflow at %p\n", si->si_addr);
@@ -149,10 +149,10 @@ static void handler(int signum, siginfo_t *si, void *context)
         }
         break;
     case SIGINT:
-        printf(B_WHITE "Signal d'interruption du programme (peut -être par l'utilisateur)\n" reset);
+        printf(B_WHITE "Signal d'interruption du programme (peut-etre par l'utilisateur)\n" reset);
         break;
     case SIGSEGV:
-        printf(B_WHITE "Accès à un segment de mémoire virtuelle non mappé en mémoire physique ou tentative de modification d'un segment de mémoire configuré en lecture seule.\n" reset);
+        printf(B_WHITE "Acces a un segment de memoire virtuelle non mappe en memoire physique ou tentative de modification d'un segment de memoire configure en lecture seule.\n" reset);
         switch (si->si_code)
         {
         case SEGV_ACCERR:
@@ -165,7 +165,7 @@ static void handler(int signum, siginfo_t *si, void *context)
             printf("Failed address bound checks at %p\n", si->si_addr);
             break;
         case SEGV_PKUERR:
-            printf("Acess was denied by memory protected by keys at %p\n", si->si_addr);
+            printf("Access was denied by memory protected by keys at %p\n", si->si_addr);
             break;
         }
         break;
@@ -195,7 +195,7 @@ static void handler(int signum, siginfo_t *si, void *context)
         }
         break;
     case SIGBUS:
-        printf(B_WHITE "Erreur Hadware\n" reset);
+        printf(B_WHITE "Erreur Hardware\n" reset);
         switch (si->si_code)
         {
         case BUS_ADRALN:
@@ -205,13 +205,13 @@ static void handler(int signum, siginfo_t *si, void *context)
             printf("Nonexistence physical address at %p\n", si->si_addr);
             break;
         case BUS_MCEERR_AO:
-            printf("Hadware memory error; action optionalat %p\n", si->si_addr);
+            printf("Hardware memory error; action optionalat %p\n", si->si_addr);
             break;
         case BUS_MCEERR_AR:
-            printf("Hadware memory error; action required at %p\n", si->si_addr);
+            printf("Hardware memory error; action required at %p\n", si->si_addr);
             break;
         case BUS_OBJERR:
-            printf("Object-specific hadware error.at %p\n", si->si_addr);
+            printf("Object-specific hardware error.at %p\n", si->si_addr);
             break;
         }
         break;
@@ -260,7 +260,7 @@ int getSymbol(struct handle *h)
 
     h->loccount = 0;
     h->dyncount = 0;
-    /*  gérer les diférentes architectures */
+    /*  Gerer les differentes architectures */
 
     switch (options.arch)
     {
@@ -270,8 +270,8 @@ int getSymbol(struct handle *h)
                                  /*
                          
                                       *Sachant qu'on a e_shnum sections,
-                                      *parcourir chaque section puis identifié la section "(SHT_SYMTAB)" ou "SHT_SYNSYM"
-                                      * recupérer les informations sur les symboles.
+                                      *parcourir chaque section puis identifier la section "(SHT_SYMTAB)" ou "SHT_SYNSYM"
+                                      * recuperer les informations sur les symboles.
                                      */
         for (i = 0; i < ehdr32->e_shnum; i++)
         {
@@ -284,7 +284,7 @@ int getSymbol(struct handle *h)
                 {
 
                     st_type = ELF32_ST_TYPE(symtab32->st_info); /* type du symbole : FUNC , OBJECT, etc..*/
-                    st_bind = ELF32_ST_BIND(symtab32->st_info); /* bindinding : WEAK, LOCAL, GLOBAL , etc..*/
+                    st_bind = ELF32_ST_BIND(symtab32->st_info); /* binding : WEAK, LOCAL, GLOBAL , etc..*/
 
                     if (st_type != STT_FUNC)
                         continue;
@@ -383,8 +383,8 @@ int getSymbol(struct handle *h)
     }
 }
 
-/* localiser le segment dynamique propre aux fichier faisant appel à des libraries
- * dont la résolution de liens se fait dynamiquement
+/* Localiser le segment dynamique propre aux fichiers faisant appel a des libraries
+ * dont la resolution de liens se fait dynamiquement
  */
 void locate_dynamic_segment(struct handle *h)
 {
@@ -416,7 +416,7 @@ void locate_dynamic_segment(struct handle *h)
     }
 }
 
-/* alocation mémoire sur le tas selon le besoin*/
+/* Allocation memoire sur le tas selon le besoin*/
 void *memAlloc(unsigned int len)
 {
     uint8_t *mem = malloc(len);
@@ -429,7 +429,7 @@ void *memAlloc(unsigned int len)
 }
 
 /**
- * @brief Charger le elf en mémoire
+ * @brief Charger le elf en memoire
  *
  * @param h
  */
@@ -480,7 +480,7 @@ void load_elf_section(struct handle *h)
 }
 
 /**
- * @brief Projection en mémoire du elf 32bit
+ * @brief Projection en memoire du elf 32bit
  *
  * @param h
  */
@@ -519,7 +519,7 @@ void MapElf32(struct handle *h)
 }
 
 /**
- * @brief Projection en mémoire du elf 64bit
+ * @brief Projection en memoire du elf 64bit
  *
  * @param h
  */
@@ -558,10 +558,10 @@ void MapElf64(struct handle *h)
 }
 
 /**
- * @brief avoir l'offset d'une section donnée
+ * @brief Avoir l'offset d'une section donnee
  *
  * @param h
- * @param section_name nom de la section dont on cherche l'adresse
+ * @param section_name Nom de la section dont on cherche l'adresse
  * @return uint8_t*
  */
 uint8_t *get_section_data(struct handle *h, const char *section_name)
@@ -598,11 +598,11 @@ uint8_t *get_section_data(struct handle *h, const char *section_name)
 }
 
 /**
- * @brief pemert d'identifier une librairie dynamique donnée
+ * @brief Permet d'identifier une librairie dynamique donnee
  *
  * @param h
  * @param xset  offset
- * @return char* pointeur sur le nom de la lib chargée dynamiquement
+ * @return char* pointeur sur le nom de la lib chargee dynamiquement
  */
 char *get_dt_strtab_name(struct handle *h, int xset)
 {
@@ -615,7 +615,7 @@ char *get_dt_strtab_name(struct handle *h, int xset)
 }
 
 /**
- * @brief Récupération des noms de chaque libraries n et les stocker
+ * @brief Recuperation des noms de chaque librarie et stockage
  * dans le tableau libnames;
  *
  * @param h
@@ -659,7 +659,7 @@ void parse_dynamic_dt_needed(struct handle *h)
 }
 
 /**
- * @brief Analyse du processus [à débugger]
+ * @brief Analyse du processus [a debugger]
  *
  * @param h
  */
@@ -674,9 +674,9 @@ void processes_analyze(struct handle *h)
 
     struct address_space *addrspace = (struct address_space *)memAlloc(sizeof(struct address_space) * 256);
 
-    /*Allocation mémoire pour la structure ELF selon
+    /*Allocation memoire pour la structure ELF selon
     que l'on soit sur une architecture 32 ou 64,
-    mapper ensuite l'éxécutable à cet addresse.
+    mapper ensuite l'executable a cette addresse.
     */
     switch (options.arch)
     {
@@ -695,14 +695,14 @@ void processes_analyze(struct handle *h)
     // Récupération des symboles
     getSymbol(h);
     printf(B_BLUE "=================================================================\n" reset);
-    printf(B_WHITE "                       status du programme \n" reset);
+    printf(B_WHITE "                       Status du programme \n" reset);
     printf(B_BLUE "=================================================================\n" reset);
     printf(reset);
     get_status(h->pid);
     printf("\n");
 
     printf(B_BLUE "=================================================================\n" reset);
-    printf(B_WHITE "                       maps du programme \n" reset);
+    printf(B_WHITE "                       Maps du programme \n" reset);
     printf(B_BLUE "=================================================================\n" reset);
     get_memory_maps(h->pid);
     printf("\n");
@@ -803,20 +803,67 @@ void processes_analyze(struct handle *h)
         printf(B_Cyan "r13:" reset B_YELLOW " %llx " reset, reg.r13);
         printf(B_Cyan "r15:" reset B_YELLOW " %llx " reset, reg.r15);
         printf(B_Cyan "rsp:" reset B_YELLOW " %llx\n" reset, reg.rsp);
-        printf(B_Cyan "rip:" reset B_YELLOW " %llx" reset, reg.rip);
+        printf(B_Cyan "rip:" reset B_YELLOW " %llx\t" reset, reg.rip);
         printf(B_Cyan "rbp:" reset B_YELLOW " %llx\n" reset, reg.rbp);
         printf("\n\n");
     }
 }
 
+
 int main(int argc, char *argv[], char *envp[])
 {
 
-    int i, opt, pid, status, skip_getopt = 0;
+    int i, opt, status, skip_getopt = 0, signum;
+    pid_t pid;
     char **p, *arch;
+
     struct handle handle;
     struct sigaction sa;
-    memset(&sa, '\0', sizeof(sa));
+
+    memset(&sa, 0, sizeof(sa));
+    
+
+
+    //Partie pour afficher l'adresse du crash
+
+    void *             array[50];
+    void *             caller_address;
+    char **            messages;
+    int                size;
+    void * ucontext;
+    ucontext_t *   uc;
+
+    uc = (ucontext_t *)ucontext;
+
+    /* Get the address at the time the signal was raised */
+    #if defined(__i386__) // gcc specific
+        caller_address = (void *) uc->uc_mcontext.eip; // EIP: x86 specific
+    #endif
+
+    size = backtrace(array, 50);
+
+    /* overwrite sigaction with caller's address */
+    array[1] = caller_address;
+
+    messages = backtrace_symbols(array, size);
+
+    /* skip first stack frame (points here) */
+    for (i = 2; i < size && messages != NULL; ++i)
+    {
+        printf(B_BLUE "Adresse du crash : \n");
+        fprintf(stderr, "[bt]: (%d) %s \n", i, messages[i]);
+    }
+
+    free(messages);
+
+
+    if (sigaction(SIGSEGV, &sa, (struct sigaction *)NULL) != 0)
+    {
+        fprintf(stderr, "Error setting signal handler for %d (%s)\n", SIGSEGV, strsignal(SIGSEGV));
+        
+    }
+
+
     if (argc < 2)
     {
 
@@ -830,11 +877,12 @@ int main(int argc, char *argv[], char *envp[])
     if (argc == 2 && argv[1][0] == '-')
         goto Menu;
 
-    // remplir la zone mémoire occupée par opts par des 0
+    // Remplir la zone mémoire occupée par opts par des 0
 
     memset(&options, 0, sizeof(options));
+    sigemptyset(&sa.sa_mask);
 
-    // initialisation de l'architecture par défaut à 64
+    // Initialisation de l'architecture par défaut à 64
     options.arch = 64;
     arch = getenv(FTRACE_ENV);
     if (arch != NULL)
@@ -899,6 +947,8 @@ int main(int argc, char *argv[], char *envp[])
 
     debut:
 
+        
+
         if ((pid = fork()) < 0)
         {
             perror("fork");
@@ -907,14 +957,7 @@ int main(int argc, char *argv[], char *envp[])
 
         if (pid == 0)
         {
-
-            if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) == -1)
-            {
-                perror("PTRACE_TRACEME");
-                exit(-1);
-            }
-            // Arrêter l'observeé à la terminaison.
-            // ptrace(PTRACE_SETOPTIONS, 0, 0, PTRACE_O_TRACEEXIT);
+            ptrace(PTRACE_TRACEME, 0, NULL, NULL);
             execve(handle.path, handle.args, envp);
             exit(0);
         }
@@ -922,6 +965,8 @@ int main(int argc, char *argv[], char *envp[])
         while (1)
         {
             waitpid(pid, &status, 0);
+                    
+
             if (WIFSIGNALED(status))
             {
                 printf(B_RED "Child killed by signal %d (%s)\n" reset, WTERMSIG(status), strsignal(WTERMSIG(status)));
@@ -937,7 +982,7 @@ int main(int argc, char *argv[], char *envp[])
                     ptrace(PTRACE_CONT, pid, 0, 0);
                     break;
 
-                default:
+                default:                  
                     sa.sa_sigaction = &handler;
                     sa.sa_flags = SA_SIGINFO;
                     sigaction(WSTOPSIG(status), &sa, NULL);
@@ -946,6 +991,7 @@ int main(int argc, char *argv[], char *envp[])
             }
         }
     }
+
 analyze_begin:
     handle.pid = pid;
     PID = pid;

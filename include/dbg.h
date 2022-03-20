@@ -1,7 +1,7 @@
 
 /**
  * @file dbg.h
- * @author your name (LEODASCE SEWANOU & )
+ * @author your name (LEODASCE SEWANOU & CHAÎMA ELHARTI)
  * @brief 
  * @version 0.1
  * @date 2022-03-19
@@ -9,6 +9,15 @@
  * @copyright Copyright (c) 2022
  * 
  */
+
+
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+#ifndef __USE_GNU
+#define __USE_GNU
+#endif
+
 
 #include <stdio.h>
 #include <ctype.h>
@@ -27,8 +36,12 @@
 #include <sys/reg.h>
 #include <stdarg.h>
 #include <signal.h>
+#include <time.h>
+#include <limits.h>
+#include <ucontext.h>
+#include <execinfo.h>
 
-/* Taille maximale pour nombre de symbols*/
+/* Taille maximale pour nombre de symboles*/
 #define NB_MAX_SYMBOLS 16364
 
 /* Nombre maximal de sections */
@@ -53,7 +66,7 @@ void get_status(int pid);
 void get_memory_maps(int pid);
 
 
-/* structure pour représenter une section elf */
+/* Structure pour représenter une section elf */
 struct elf_section
 {
     char *sh_name;
@@ -61,7 +74,7 @@ struct elf_section
     unsigned long sh_size;
 };
 
-/* structure caractérisant un symbole quelconque */
+/* Structure caractérisant un symbole quelconque */
 struct symbol
 {
     char *name;
@@ -82,14 +95,15 @@ struct handle
     struct symbol locsyms[NB_MAX_SYMBOLS];        /* Tableau pour stocker les symboles locaux */
     struct symbol dynsyms[NB_MAX_SYMBOLS];        /* Tableau pour stocker les symboles dynamiques */
     char *libnames[256];                          /* Tableau pour stocker le nom des libairies chargées */
-    int loccount;                                 /* compteur du nombre de symbole local */
-    int dyncount;                                 /* compteur du nombre de symbole dynamique */
-    int libcount;                                 /* compteur du nombre de libairie dynamique */
+    int loccount;                                 /* Compteur du nombre de symbole local */
+    int dyncount;                                 /* Compteur du nombre de symbole dynamique */
+    int libcount;                                 /* Compteur du nombre de libairies dynamiques */
     int shdr_count;
-    struct user_regs_struct p_struct; /* compteur du nombre de section */
+    struct user_regs_struct p_struct; /* Compteur du nombre de section */
     int pid;
     char *local;
 };
+
 
 
 /**
@@ -99,7 +113,7 @@ struct handle
  * @param si structure siginfo_t
  * @param context
  */
-static void handler(int signum, siginfo_t *si, void *context);
+//static void handler(int signum, siginfo_t *si, void *context);
 
 
 /**
@@ -110,7 +124,7 @@ static void handler(int signum, siginfo_t *si, void *context);
  */
 int getSymbol(struct handle *h);
 
-/* structure de gestion des options du débuggage */
+/* Structure de gestion des options du débuggage */
 struct
 {
     int elfinfo;
@@ -119,7 +133,7 @@ struct
     int arch;
 } options;
 
-/* structure d'un elf au format 64 bit*/
+/* Structure d'un elf au format 64 bit*/
 struct elf64
 {
     Elf64_Ehdr *ehdr; //
@@ -132,7 +146,7 @@ struct elf64
     char *symStringTable; //
 };
 
-/* structure d'un  elf au format 32 bit */
+/* Structure d'un  elf au format 32 bit */
 struct elf32
 {
     Elf32_Ehdr *ehdr; //
@@ -147,7 +161,7 @@ struct elf32
 
 
 
-/* */
+
 struct address_space
 {
     unsigned long svaddr;
@@ -168,13 +182,13 @@ pid_t PID;
 char *strduplication(const char *original);
 
 
-/* localiser le segment dynamique propre aux fichier faisant appel à des libraries
+/* Localiser le segment dynamique propre aux fichiers faisant appel à des libraries
  * dont la résolution de liens se fait dynamiquement
  */
 void locate_dynamic_segment(struct handle *h);
 
 
-/* alocation mémoire sur le tas selon le besoin*/
+/* Allocation mémoire sur le tas selon le besoin*/
 void *memAlloc(unsigned int len);
 
 /**
@@ -199,16 +213,16 @@ void MapElf32(struct handle *h);
 void MapElf64(struct handle *h);
 
 /**
- * @brief avoir l'offset d'une section donnée
+ * @brief Avoir l'offset d'une section donnée
  *
  * @param h
- * @param section_name nom de la section dont on cherche l'adresse
+ * @param section_name Nom de la section dont on cherche l'adresse
  * @return uint8_t*
  */
 uint8_t *get_section_data(struct handle *h, const char *section_name);
 
 /**
- * @brief pemert d'identifier une librairie dynamique donnée
+ * @brief Permet d'identifier une librairie dynamique donnée
  *
  * @param h
  * @param xset  offset
@@ -218,7 +232,7 @@ char *get_dt_strtab_name(struct handle *h, int xset);
 
 
 /**
- * @brief Récupération des noms de chaque libraries n et les stocker
+ * @brief Récupération des noms de chaque librairie et stockage
  * dans le tableau libnames;
  *
  * @param h
