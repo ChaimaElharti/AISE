@@ -10,5 +10,5 @@ Le fichier dbg.c est constitué de :
 - Il rend compte de l’état de sa mémoire, des registres, des bibliothèques chargées et des variables globales disponibles. 
 - Il traque également les erreurs liées au code, qui sont notamment liées à des erreurs de segmentation ou encore de débordement de pile etc. à l'aide de la librairie ptrace. 
 
-Par manque d'expérience et de temps, nous n'avons pas pu implémenter une fonction permettant de localiser les signaux d'erreur dans le code, c'est pourquoi on ajoute un flag de compilation -fsanitize=address, qui permet de trouver les adresses qui causent les erreurs et les fonctions qui posent problème. 
+Par manque d'expérience et de temps, nous avons implémenté une fonction permettant de localiser les signaux d'erreur dans le code indépendante, avec la méthode des signaux. On ajoute également un flag de compilation -fsanitize=address, qui permet de trouver les adresses qui causent les erreurs et les fonctions qui posent problème. 
 
