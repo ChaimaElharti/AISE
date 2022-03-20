@@ -5,17 +5,18 @@ TARGET_EXEC :=
 all: run segf debugSgf 
 
 run: 
-		$(CC) src/dbg.c -o dbg 
+		$(CC) src/adr.c -o adr
+		$(CC) src/dbg.c -o dbg
 
 debug:
 		./dbg -e $(TARGET_EXEC)
 
 segf:
-	$(CC) test/segfault1.c -g -rdynamic -o  Sgf1
-	$(CC) test/segfault2.c -g -rdynamic -o  Sgf2
-	$(CC) test/segfault3.c -g -rdynamic -o  Sgf3
-	$(CC) test/infiniteLoop.c -g -rdynamic -o  loop 
-	$(CC) test/test.c -g -rdynamic -o  stacksmashing
+	$(CC) test/segfault1.c -g -rdynamic -fsanitize=address -o  Sgf1
+	$(CC) test/segfault2.c -g -rdynamic -fsanitize=address -o  Sgf2
+	$(CC) test/segfault3.c -g -rdynamic -fsanitize=address -o  Sgf3
+	$(CC) test/infiniteLoop.c -g -rdynamic -fsanitize=address -o  loop 
+	$(CC) test/test.c -g -rdynamic -fsanitize=address -o  stacksmashing
 
 debugSgf:
 	./dbg -e Sgf1

@@ -816,52 +816,12 @@ int main(int argc, char *argv[], char *envp[])
     int i, opt, status, skip_getopt = 0, signum;
     pid_t pid;
     char **p, *arch;
+    void* add;
 
     struct handle handle;
     struct sigaction sa;
 
     memset(&sa, 0, sizeof(sa));
-    
-
-
-    //Partie pour afficher l'adresse du crash
-
-    void *             array[50];
-    void *             caller_address;
-    char **            messages;
-    int                size;
-    void * ucontext;
-    ucontext_t *   uc;
-
-    uc = (ucontext_t *)ucontext;
-
-    /* Get the address at the time the signal was raised */
-    #if defined(__i386__) // gcc specific
-        caller_address = (void *) uc->uc_mcontext.eip; // EIP: x86 specific
-    #endif
-
-    size = backtrace(array, 50);
-
-    /* overwrite sigaction with caller's address */
-    array[1] = caller_address;
-
-    messages = backtrace_symbols(array, size);
-
-    /* skip first stack frame (points here) */
-    for (i = 2; i < size && messages != NULL; ++i)
-    {
-        printf(B_BLUE "Adresse du crash : \n");
-        fprintf(stderr, "[bt]: (%d) %s \n", i, messages[i]);
-    }
-
-    free(messages);
-
-
-    if (sigaction(SIGSEGV, &sa, (struct sigaction *)NULL) != 0)
-    {
-        fprintf(stderr, "Error setting signal handler for %d (%s)\n", SIGSEGV, strsignal(SIGSEGV));
-        
-    }
 
 
     if (argc < 2)
@@ -944,10 +904,9 @@ int main(int argc, char *argv[], char *envp[])
             printf(reset);
             exit(0);
         }
+       
 
-    debut:
-
-        
+    debut:       
 
         if ((pid = fork()) < 0)
         {
@@ -975,12 +934,11 @@ int main(int argc, char *argv[], char *envp[])
             else if (WIFSTOPPED(status))
             {
                 printf(B_RED "Child stopped by signal %d (%s)\n" reset, WSTOPSIG(status), strsignal(WSTOPSIG(status)));
-
                 switch (WSTOPSIG(status))
                 {
                 case SIGTRAP:
                     ptrace(PTRACE_CONT, pid, 0, 0);
-                    break;
+                break;
 
                 default:                  
                     sa.sa_sigaction = &handler;
@@ -991,6 +949,7 @@ int main(int argc, char *argv[], char *envp[])
             }
         }
     }
+
 
 analyze_begin:
     handle.pid = pid;
